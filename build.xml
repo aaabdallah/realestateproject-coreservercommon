@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Core Server Commons" 
+	default="deployJar" 
+	basedir="C:/Documents and Settings/Abu Abd-Allah/My Documents/Data/Real Estate Project/workspace/CoreServerCommons">
+
+	<description>
+	Build file for the Core Server Commons
+	</description>
+
+	<!-- ****************************************************************** -->
+	<property name="s1as.dir" location="C:/Sun/AppServer"/>
+	<property name="s1as.deploy.dir" location="${s1as.dir}/domains/domain1/autodeploy"/>
+	<property name="s1as.lib.dir" location="${s1as.dir}/lib"/>
+	<property name="s1as.domainlib.dir" location="${s1as.dir}/domains/domain1/lib"/>
+	
+	<property name="src.dir" location="${basedir}/src"/>
+	<property name="bin.dir" location="${basedir}/bin"/>
+	<property name="build.dir" location="${basedir}/build"/>
+	<property name="conf.dir" location="${basedir}/conf"/>
+
+	<!-- Set up the general project classpath -->
+	<path id="build.classpath">
+		<fileset dir="${s1as.lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- ****************************************************************** -->
+	<target name="buildJar">
+		<delete quiet="true" file="${build.dir}/CoreServerCommons.jar"/>
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpath="${build.classpath}"/>
+		<jar destfile="${build.dir}/CoreServerCommons.jar" basedir="${bin.dir}"/>
+		<antcall target="zipAll"/>
+	</target>
+	
+	<!-- ****************************************************************** -->
+	<target name="deployJar" depends="buildJar">
+		<delete quiet="true" file="${s1as.domainlib.dir}/CoreServerCommons.jar"/>
+		<copy file="${build.dir}/CoreServerCommons.jar" todir="${s1as.domainlib.dir}"/>
+		<echo>=================================</echo>
+		<echo>IF SUCCESSFUL: RESTART THE SERVER</echo>
+		<echo>=================================</echo>
+	</target>
+
+	<!-- ****************************************************************** -->
+	<target name="zipAll">
+		<delete quiet="true" file="${build.dir}/CoreServerCommons.zip"/>
+		<zip update="true" destfile="${build.dir}/CoreServerCommons.zip" basedir="."/>
+	</target>
+</project>
